@@ -155,26 +155,33 @@ function destroy(req, res) {
     throw err;
   }
 
-  // Salvo l'elemento che sto eliminando e lo cerco nell'array
-  const deleted = posts.find((post, index) => post.id === id);
-  // Controllo per ID non presente nella lista
-  if (!deleted) {
-    const err = new Error("resource not found");
-    err.status = 404;
-    throw err;
-  }
+  const sql = "DELETE FROM posts WHERE id = ?";
 
-  // Stampo in console l'elemento eliminato
-  console.log("Elemento eliminato: ", deleted);
+  connection.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: "Failed to delete pizza" });
+    res.sendStatus(204);
+  });
 
-  // Cancello l'elemento dall'array
-  posts.splice(posts.indexOf(deleted), 1);
+  //   // Salvo l'elemento che sto eliminando e lo cerco nell'array
+  //   const deleted = posts.find((post, index) => post.id === id);
+  //   // Controllo per ID non presente nella lista
+  //   if (!deleted) {
+  //     const err = new Error("resource not found");
+  //     err.status = 404;
+  //     throw err;
+  //   }
 
-  // Stampo in console la lista aggiornata
-  console.log("Lista aggiornata: ", posts);
+  //   // Stampo in console l'elemento eliminato
+  //   console.log("Elemento eliminato: ", deleted);
 
-  // Ritorno alla chiamata uno stato 204
-  res.sendStatus(204);
+  //   // Cancello l'elemento dall'array
+  //   posts.splice(posts.indexOf(deleted), 1);
+
+  //   // Stampo in console la lista aggiornata
+  //   console.log("Lista aggiornata: ", posts);
+
+  //   // Ritorno alla chiamata uno stato 204
+  //   res.sendStatus(204);
 }
 
 module.exports = { index, show, store, update, modify, destroy };
