@@ -39,16 +39,25 @@ function show(req, res) {
     throw err;
   }
 
-  const post = posts.find((post) => post.id === id);
+  const sql = "SELECT * FROM posts WHERE id = ?";
 
-  // Controllo per ID non presente nella lista
-  if (!post) {
-    const err = new Error("resource not found");
-    err.status = 404;
-    throw err;
-  }
+  connection.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+    if (results.length === 0)
+      return res.status(404).json({ error: "Post not found" });
+    res.json(results[0]);
+  });
 
-  res.json(post);
+  // const post = posts.find((post) => post.id === id);
+
+  // // Controllo per ID non presente nella lista
+  // if (!post) {
+  //   const err = new Error("resource not found");
+  //   err.status = 404;
+  //   throw err;
+  // }
+
+  // res.json(post);
 }
 
 // STORE
