@@ -39,13 +39,22 @@ function show(req, res) {
     throw err;
   }
 
-  const sql = "SELECT * FROM posts WHERE id = ?";
+  const postsSql = "SELECT * FROM posts WHERE id = ?";
 
-  connection.query(sql, [id], (err, results) => {
+  connection.query(postsSql, [id], (err, postsResults) => {
     if (err) return res.status(500).json({ error: "Database query failed" });
-    if (results.length === 0)
+    if (postsResults.length === 0)
       return res.status(404).json({ error: "Post not found" });
-    res.json(results[0]);
+    let post = postsResults[0];
+
+    const tagsSql =
+      "SELECT T.* FROM blog.tags AS T JOIN blog.post_tag AS PT ON T.id = PT.tag_id WHERE PT.post_id = ?";
+    connection.query(tagsSql, [id], (err, tagsResults) => {
+      if (err) return res.status(500).json({ error: "Database query failed" });
+      post.tags = tagsResults;
+
+      res.json(post);
+    });
   });
 
   // const post = posts.find((post) => post.id === id);
