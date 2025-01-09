@@ -1,27 +1,31 @@
-const posts = require("../db/posts");
+const connection = require("../db/postsconn");
 
 // INDEX
 function index(req, res) {
+  const sql = "SELECT * from posts";
+
+  connection.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: "Database query failed" });
+    res.json(results);
+  });
+
   // FILTRO POST PER KEYWORD NEI TAGS
-  let filteredPosts = posts;
-
+  // let filteredPosts = posts;
   // SE C'E' UNA KEY DO A TERM IL VALORE DELLA KEY, ALTRIMENTI DO VALORE NULLO
-  const term = req.query.term ?? "";
-
+  // const term = req.query.term ?? "";
   // SE TERM HA UN VALORE FILTRO I POST PER QUELLI CHE INCLUDONO IL VALORE TRA I TAG
-  if (term) {
-    filteredPosts = posts.filter((post) => {
-      let isTermIncluded = false;
-      // PER OGNI POST CONTROLLO SE OGNI TAG CONTIENE TERM
-      post.tags.forEach((tag) => {
-        if (tag.toLowerCase().includes(term.toLowerCase()))
-          isTermIncluded = true;
-      });
-      return isTermIncluded;
-    });
-  }
-
-  res.json({ filteredPosts, postNumber: filteredPosts.length });
+  // if (term) {
+  //   filteredPosts = posts.filter((post) => {
+  //     let isTermIncluded = false;
+  //     // PER OGNI POST CONTROLLO SE OGNI TAG CONTIENE TERM
+  //     post.tags.forEach((tag) => {
+  //       if (tag.toLowerCase().includes(term.toLowerCase()))
+  //         isTermIncluded = true;
+  //     });
+  //     return isTermIncluded;
+  //   });
+  // }
+  // res.json({ filteredPosts, postNumber: filteredPosts.length });
 }
 
 // SHOW

@@ -3,8 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = process.env.HOST_PORT;
-const domain = process.env.HOST_DOMAIN;
+const port = 3000;
+const domain = "http://localhost";
 
 // MIDDLEWARES
 const errorHandler = require("./middlewares/errorHandler");
